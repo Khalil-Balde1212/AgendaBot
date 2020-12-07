@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "mysql": "^2.18.1",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0"
+  },
+  "name": "AgendaBot",
+  "version": "1.0.0",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/bot.js",
+    "dev": "nodemon ./src/bot.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
