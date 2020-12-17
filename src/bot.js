@@ -36,12 +36,22 @@ const Users = sequelize.define('users', {
     }
 }, {
     timestamps: false,
-    }
-);
+});
+
+const Course = sequelize.define('courses', {
+    user_id: {
+        type: Sequelize.STRING,
+        primaryKey: true
+    },
+    course_name: {type: Sequelize.STRING},
+    start_date: {type: Sequelize.STRING},
+    end_date: {type: Sequelize.STRING}
+});
 
 client.once('ready', () => {
     console.log("Bot is logged in!");
     Users.sync();
+    Course.sync();
 });
 
 client.on('message', async message => {
