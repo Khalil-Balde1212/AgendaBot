@@ -64,7 +64,10 @@ client.on('message', async message => {
         case "ping": //test command
             message.channel.send("Pong!");
             break;
-
+        
+        case "fc":
+        case "favouritecolour":
+        case "favcolor":
         case "favcolour":
 
             if(args[0] == "set"){
@@ -86,6 +89,15 @@ client.on('message', async message => {
                 message.channel.send(target.toString() + "'s favourite colour is: " + fav);
             }
             
+            break;
+
+        case "test": //test code to do a thing
+            const messageEmbed = new discord.MessageEmbed();
+            messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
+            messageEmbed.setTitle("test");
+            messageEmbed.setDescription("epic");
+
+            message.channel.send(messageEmbed);
             break;
 
         default:
