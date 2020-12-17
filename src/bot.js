@@ -38,7 +38,7 @@ const Users = sequelize.define('users', {
     timestamps: false,
 });
 
-const Course = sequelize.define('courses', {
+const Courses = sequelize.define('courses', {
     user_id: {
         type: Sequelize.STRING,
         primaryKey: true
@@ -48,10 +48,25 @@ const Course = sequelize.define('courses', {
     end_date: {type: Sequelize.STRING}
 });
 
+const Assignments = sequelize.define('assignments', {
+    user_id: {
+        type: Sequelize.STRING,
+        primaryKey: true
+    },
+    course_name: {type: Sequelize.STRING},
+    title: {type: Sequelize.STRING},
+    due_date: {type: Sequelize.STRING},
+    remind_me: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
+    }
+});
+
 client.once('ready', () => {
     console.log("Bot is logged in!");
     Users.sync();
-    Course.sync();
+    Courses.sync();
+    Assignments.sync();
 });
 
 client.on('message', async message => {
