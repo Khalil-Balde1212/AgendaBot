@@ -151,9 +151,6 @@ client.on('message', async message => {
                             }
                         });
                     } else {
-                        if(){
-                            
-                        }
                     }
                     break;
 
