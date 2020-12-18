@@ -3,6 +3,8 @@ const fs = require('fs');
 const discord = require('discord.js');
 const { Sequelize } = require('sequelize');
 const { Console } = require('console');
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
+const { title, cpuUsage } = require('process');
 
 const client = new discord.Client();
 
@@ -41,11 +43,12 @@ const Users = sequelize.define('users', {
 const Courses = sequelize.define('courses', {
     user_id: {
         type: Sequelize.STRING,
-        primaryKey: true
     },
-    course_name: {type: Sequelize.STRING},
-    start_date: {type: Sequelize.STRING},
-    end_date: {type: Sequelize.STRING}
+    course_name: {
+        type: Sequelize.STRING
+    },
+    start_date: {type: Sequelize.STRING, defaultValue: 'No date inputted'},
+    end_date: {type: Sequelize.STRING, defaultValue: 'No date inputted'}
 });
 
 const Assignments = sequelize.define('assignments', {
@@ -56,6 +59,10 @@ const Assignments = sequelize.define('assignments', {
     course_name: {type: Sequelize.STRING},
     title: {type: Sequelize.STRING},
     due_date: {type: Sequelize.STRING},
+    complete: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
     remind_me: {
         type: Sequelize.BOOLEAN,
         defaultValue: true
@@ -100,6 +107,7 @@ client.on('message', async message => {
                     message.channel.send("Proper use of the command is ```!AB favcolour set [hexcode]```");
                 } else {//set's user's favourite colour to something more epic
                     user = (await Users.findOne({where: {user_id: message.author.id}}));
+                    message.channel.send("Set your favourite colour to " + args[1]);
                     user.set('fav_colour', args[1]);
                     user.save();
                 }
@@ -124,7 +132,72 @@ client.on('message', async message => {
 
             message.channel.send(messageEmbed);
             break;
+        
+        case "course":
+            switch(args[0]){
+                case "a":
+                case "add":
+                    if(args[1] == null){
+                        message.channel.send("What is the name of the course you'd like to add?");
+                        const collector = new discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { max: 1, time: 10000 });
+                        // console.log(collector);
+                        collector.on('collect', message => {
+                            console.log(Courses.findAll({where: {user_id: message.author.id, course_name: message.content}})[0]);
+                            if(Courses.findAll({where: {user_id: message.author.id, course_name: message.content}})[0] == undefined){
+                                Courses.create({user_id: message.author.id, course_name: message.content});
+                                message.channel.send("Added " + message.content + " to your course list!");
+                            } else{
+                                message.channel.send("You are already enrolled in " + message.content + "!");
+                            }
+                        });
+                    } else {
+                        if(){
+                            
+                        }
+                    }
+                    break;
 
+                case "r":
+                case "remove":
+                    let filter = m => m.author.id === message.author.id;
+                        message.channel.send("What course would you like to remove?").then(() => {
+                            message.channel.awaitMessages(filter, {
+                                max: 1,
+                                time: 30000,
+                                errors: ['time']
+                            }).then(message => {
+                                Courses.destroy({where: {user_id: message.first().author.id, course_name: message.first().content}});
+                                message.first().channel.send("Removed " + message.first().content + " from your course list!");
+                            });
+                    });
+
+                    break;
+
+                case "list":
+                    course_list = (await Courses.findAll({where: {user_id: message.author.id}}));
+                    const messageEmbed = new discord.MessageEmbed;
+                    messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
+                    messageEmbed.setTitle(message.author.username + "'s courses!");
+                    messageEmbed.setDescription(message.author.username + " is currently enrolled in");
+
+                    for(i = 0; i < course_list.length; i++){
+                        messageEmbed.addField(course_list[i].get('course_name'),
+                            "Starts on: " + course_list[i].get('start_date') + "\n" +
+                            "Ends on:   " + course_list[i].get('end_date'), true);
+                    }
+
+                    message.channel.send(messageEmbed);
+                    break;
+
+
+                default:
+                    message.channel.send("You're a poopoo head that literally isn't an option"); //TODO add proper help command
+                    break;
+
+            }
+        
+            break;
+        
         default:
             message.channel.send("Command doesnt exist!");
             break;
