@@ -137,12 +137,12 @@ client.on('message', async message => {
             switch(args[0]){
                 case "a":
                 case "add":
-                    if(args[1] == null){
+                    if(args[1] == null){//check if the user just adds a course
                         message.channel.send("What is the name of the course you'd like to add?");
                         const collector = new discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { max: 1, time: 10000 });
                         // console.log(collector);
                         collector.on('collect', message => {
-                            console.log(Courses.findAll({where: {user_id: message.author.id, course_name: message.content}})[0]);
+                            // console.log(Courses.findAll({where: {user_id: message.author.id, course_name: message.content}})[0]);
                             if(Courses.findAll({where: {user_id: message.author.id, course_name: message.content}})[0] == undefined){
                                 Courses.create({user_id: message.author.id, course_name: message.content});
                                 message.channel.send("Added " + message.content + " to your course list!");
@@ -162,20 +162,26 @@ client.on('message', async message => {
                                 max: 1,
                                 time: 30000,
                                 errors: ['time']
-                            }).then(message => {
-                                Courses.destroy({where: {user_id: message.first().author.id, course_name: message.first().content}});
-                                message.first().channel.send("Removed " + message.first().content + " from your course list!");
+                            }).then(async message => {
+                                // console.log(Courses.findOne({where: {user_id: message.first().author.id, course_name: message.first().content}}));
+                                if(await Courses.findOne({where: {user_id: message.first().author.id, course_name: message.first().content}}) == undefined){
+                                    message.first().channel.send("You don't take that course!");
+                                } else {
+                                    message.first().channel.send("Removed " + message.first().content + " from your course list");
+                                    Courses.destroy({where: {user_id: message.first().author.id, course_name: message.first().content}});
+                                }
                             });
-                    });
+                        });
 
                     break;
 
                 case "list":
-                    course_list = (await Courses.findAll({where: {user_id: message.author.id}}));
+                    target = message.mentions.users.first() || message.author;
+                    course_list = (await Courses.findAll({where: {user_id: target.id}}));
                     const messageEmbed = new discord.MessageEmbed;
-                    messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
-                    messageEmbed.setTitle(message.author.username + "'s courses!");
-                    messageEmbed.setDescription(message.author.username + " is currently enrolled in");
+                    messageEmbed.setColor((await Users.findOne({where: {user_id: target.id}})).get('fav_colour'));
+                    messageEmbed.setTitle(target.username + "'s courses!");
+                    messageEmbed.setDescription(target.username + " is currently enrolled in");
 
                     for(i = 0; i < course_list.length; i++){
                         messageEmbed.addField(course_list[i].get('course_name'),
