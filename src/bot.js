@@ -1,10 +1,7 @@
 require('dotenv').config();
-const fs = require('fs');
 const discord = require('discord.js');
 const { Sequelize } = require('sequelize');
 const { Console } = require('console');
-const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
-const { title, cpuUsage } = require('process');
 
 const client = new discord.Client();
 
@@ -26,48 +23,9 @@ try {
     console.error('Unable to connect to the database:', error);
 }
 
-const Users = sequelize.define('users', {
-	user_id: {
-        type: Sequelize.STRING,
-		unique: true,
-        primaryKey: true,
-    },
-    fav_colour: {
-        type: Sequelize.INTEGER,
-        defaultValue: '0xFF6A39'
-    }
-}, {
-    timestamps: false,
-});
-
-const Courses = sequelize.define('courses', {
-    user_id: {
-        type: Sequelize.STRING,
-    },
-    course_name: {
-        type: Sequelize.STRING
-    },
-    start_date: {type: Sequelize.STRING, defaultValue: 'No date inputted'},
-    end_date: {type: Sequelize.STRING, defaultValue: 'No date inputted'}
-});
-
-const Assignments = sequelize.define('assignments', {
-    user_id: {
-        type: Sequelize.STRING,
-        primaryKey: true
-    },
-    course_name: {type: Sequelize.STRING},
-    title: {type: Sequelize.STRING},
-    due_date: {type: Sequelize.STRING},
-    complete: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-    },
-    remind_me: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: true
-    }
-});
+const Users = require('./Models/User')(sequelize, Sequelize.DataTypes);
+const Courses = require('./Models/Course')(sequelize, Sequelize.DataTypes);
+const Assignments = require('./Models/Assignment')(sequelize, Sequelize.DataTypes);
 
 client.once('ready', () => {
     console.log("Bot is logged in!");
