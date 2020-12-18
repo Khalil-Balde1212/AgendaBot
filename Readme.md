@@ -1,5 +1,8 @@
-title: "Agenda Bot"
-output: html_document
-bibliography: rmarkdown: rmarkdown.bib
+# AgendaBot
 
-This is my epic discord bot. And my 3rd attempt at a read me file
+This is my last and final attempt at this. If it doesn't work Imma sirc immediately
+
+## What even if AgendaBot
+AgendaBot is a discord bot designed to help you track assignments
+
+**This is epic**
