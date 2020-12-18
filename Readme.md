@@ -1,11 +1,7 @@
-<t>
-    This is my epic Discord.js project
-</t>
+---
+title: "Agenda Bot"
+output: html_document
+bibliography: rmarkdown: rmarkdown.bib
+---
 
-<h>
-    I don't remember how to do mark down
-</h>
-
-<p>
-    No way, epic
-</p>
+This is my epic discord bot. And my 3rd attempt at a read me file
