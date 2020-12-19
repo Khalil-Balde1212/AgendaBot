@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'course',
+    name: 'favcol',
     description: 'test',
     async execute(discord, message, args, sequelize, dataTypes){
         const Users = require('../Models/User')(sequelize, dataTypes);
@@ -7,10 +7,10 @@ module.exports = {
         switch(args[0]){
             case 'set':
                 if(args[1] == null){
-                    message.channel.send("Proper use of the command is ```!AB favcolour set [hexcode]```");
+                    message.channel.send("Proper use of the command is `!AB favcolour set [hexcode]`");
                 } else {
                     user = (await Users.findOne({where: {user_id: message.author.id}}));
-                    message.channel.send("Set your favourite colour to " + args[1]);
+                    message.channel.send("Set your favourite colour to `" + args[1] + "`");
                     user.set('fav_colour', args[1]);
                     user.save();
                 }
@@ -26,7 +26,7 @@ module.exports = {
                     Users.create({user_id: target.id});
                     fav = (await Users.findOne({where: {user_id: target.id}})).get('fav_colour');
                 }
-                message.channel.send(target.toString() + "'s favourite colour is: " + fav);
+                message.channel.send(target.toString() + "'s favourite colour is: `" + fav + "`");
                 break;
         }
     }
