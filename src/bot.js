@@ -14,8 +14,8 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
-client.login(process.env.BOT_TOKEN);
-console.log("Bot is logged in!");
+client.login(process.env.BOT_TOKEN).then(() => console.log("Bot is logged in!"));
+
 
 prefix = process.env.COMMAND_PREFIX;
 
