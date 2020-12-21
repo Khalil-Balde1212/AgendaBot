@@ -50,18 +50,40 @@ module.exports = {
 
             case "r":
             case "remove":
-                if(args[1] != undefined){
-                    console.log(await Courses.findAll({where: {user_id: message.author.id, course_name: args[1]}}));
-                    if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) != undefined){
-                        Courses.destroy({where: {user_id: message.author.id, course_name: args[1]}});
-                        Assignments.destroy({where: {user_id: message.author.id, course_name: args[1]}});
-                        message.channel.send("Removed " + args[1] + " from your course list!");
-                    } else{
-                        message.channel.send("You don't even take " + args[1] + "!");
-                    }
-                } else {
-                    message.channel.send("No thing dude what the fuck");
+                //check if proper number of inputs
+                if(args[1] == undefined || args[2] != undefined){
+                    message.channel.send('proper use of the command is: `!AB course remove [course name]');
+                    break;
                 }
+
+                //check if the course isn't on their courselist
+                if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
+                    message.channel.send('`' + args[1] + '` isn\'t on your course list!');
+                    break;
+                }
+
+                //double check that user wants to delete course
+                message.channel.send('You will remove  `' + args[1] + '`from your course list and **ALL** work due dates assigned to it. Are you sure you want to remove it from your course list? `(Y/N)`').then(() => {
+                    filter = response => {
+                        return response.author.id == message.author.id;
+                    }
+
+                    message.channel.awaitMessages(filter, {max: 1, time: 5000, errors: ['time']}).then(collected =>{
+                        if(collected.first().content.toLowerCase() == 'y'){
+                            Courses.destroy({where: {user_id: message.author.id, course_name: args[1]}});
+                            Assignments.destroy({where: {user_id: message.author.id, course_name: args[1]}});
+                            message.channel.send("`" + args[1] + "` was removed from your course list!");
+                        } else 
+                        if(collected.first().content.toLowerCase() == 'n'){
+                            message.channel.send('`' + args[1] + '` was **NOT** removed');
+                        } else {
+                            message.channel.send('Invalid response. `' + args[1] + '` was **NOT** removed');
+                        }
+                    })
+                    .catch(collected => {
+                        message.channel.send('response took too long. `' + args[1] + '` was **NOT** removed');
+                    });
+                });
                 break;
 
             case "list":
