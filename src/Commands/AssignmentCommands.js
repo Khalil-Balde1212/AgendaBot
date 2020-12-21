@@ -13,8 +13,14 @@ module.exports ={
         switch(args[0]){
             case 'add':
                 //check for misused command
-                if(args[1] == undefined || args[2] == undefined){
-                    message.channel.send('Proper use of the command is: `!AB work add [course name] [start date] [end date]`')
+                if(args[1] == undefined){
+                    message.channel.send('Proper use of the command is: `!AB work add [course name] [start date] [end date]`');
+                    break;
+                }
+
+                if(args[2] != undefined && args[3] == undefined){
+                    message.channel.send('Proper use of the command is: `!AB work add [course name] [start date] [end date]`');
+                    break;
                 }
 
                 //check if course is in course list
@@ -22,6 +28,7 @@ module.exports ={
                     message.channel.send('`' + args[1] + "` isn't on your course list!");
                     break;
                 };
+
 
                 if(args[3] == undefined){
                     Assignments.create({user_id: message.author.id, course_name: args[1], title: args[2]});
@@ -178,9 +185,49 @@ module.exports ={
 
                 break;
 
+            case 'test':
+                console.log(checkValidDate(args[1]));
+                break;
+
             default: 
                 message.channel.send("henlo");
                 break;
         }
     }
+}
+
+//mm/dd/yyyy hh:mm
+function checkValidDate(dateString){
+    var parts = dateString.toUpperCase().split(" ");
+    // First check for the pattern
+    if(!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(parts[0])){
+        console.log('date invalid')
+        return false;
+    }
+    
+    if(/^\d{1,2}:\d{2}\s([ap]m)?$/.test(parts[1]) ||/^\d{1,2}:\d{2}([ap]m)?$/.test(parts[1])){
+        console.log('time invalid')
+        return false;
+    }
+
+    // Parse the date parts to integers
+    parts = parts[0].split("/").concat(parts[1].split(":"));
+    var minute = parseInt(parts[4].substring(0, 2), 10);
+    var hour = parseInt(parts[3], 10);
+    var day = parseInt(parts[1], 10);
+    var month = parseInt(parts[0], 10);
+    var year = parseInt(parts[2], 10);
+
+    // Check the ranges of month and year
+    if(year < 1000 || year > 3000 || month == 0 || month > 12)
+        return false;
+
+    var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
+    // Adjust for leap years
+    if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+        monthLength[1] = 29;
+
+    // Check the range of the day
+    return (day > 0 && day <= monthLength[month - 1]) && (hour > 0 && hour <= 12) && (minute > 0 && minute < 60);
 }
