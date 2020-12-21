@@ -12,6 +12,12 @@ module.exports ={
 
         switch(args[0]){
             case 'add':
+                //check for misused command
+                if(args[1] == undefined || args[2] == undefined){
+                    message.channel.send('Proper use of the command is: `!AB work add [course name] [start date] [end date]`')
+                }
+
+                //check if course is in course list
                 if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
                     message.channel.send('`' + args[1] + "` isn't on your course list!");
                     break;
@@ -19,6 +25,7 @@ module.exports ={
 
                 if(args[3] == undefined){
                     Assignments.create({user_id: message.author.id, course_name: args[1], title: args[2]});
+                    message.channel.send("Added `" + args[2] + "` to `" + args[1] + "`");
                 } else {
                     if(args[3].charAt(2) != '/' || args[3].charAt(5) != '/') {
                         message.channel.send("Please put dates in the form mm/dd/yyyy hh:mm");
@@ -44,7 +51,6 @@ module.exports ={
                 //display work for all courses
                 if(args[1] == undefined){
                     all_work = (await Assignments.findAll({where: {user_id: target.id}}));
-
                 } else {
                     if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
                         message.channel.send('`' + args[1] + "` isn't on your course list!");
@@ -52,7 +58,6 @@ module.exports ={
                     };
 
                     all_work = (await Assignments.findAll({where: {user_id: target.id, course_name: args[1]}}));
-                    // console.log("this is epic");
                 }
 
                 //assign to menu pages
@@ -82,6 +87,7 @@ module.exports ={
                     j++;
                 }
 
+                //check if the impossible has happened
                 if(menu[0] == undefined){
                     menu[0] = new discord.MessageEmbed;
                     menu[0].setTitle(target.username + '\'s agenda')
@@ -160,8 +166,6 @@ module.exports ={
                                     embed.edit(menu[currentIndex]);
                                 }
                             }
-
-
                         }
                     })
 
