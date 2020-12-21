@@ -9,22 +9,22 @@ module.exports = {
         switch(args[0]){
             case "a":
             case "add":
+                //check for improper number of arguments
+                if(args[1] == undefined || (args[2] != undefined && args[3] == undefined)){
+                    message.channel.send('Proper use of the command is: `!AB course add [course name]` \nor`!AB course add [course name] [start date] [end date]`');
+                    break;
+                }
+
                 //check if the course is already in the course list
                 if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) != undefined){
                     message.channel.send('`' + args[1] + '` is already on your course list!');
                     break;
                 }
-
+                
                 //no date inputs
                 if(args[2] == undefined && args[3] == undefined){
                     Courses.create({user_id: message.author.id, course_name: args[1]});
                     message.channel.send('Added `' + args[1] + '` to your course list!');
-                    break;
-                }
-
-                //check for improper number of arguments
-                if(args[2] != undefined && args[3] == undefined){
-                    message.channel.send('Proper use of the command is: `!AB course add [course name] [start date] [end date]`')
                     break;
                 }
 
