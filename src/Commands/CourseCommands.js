@@ -165,7 +165,7 @@ module.exports = {
                     break;
                 }
 
-                //check if the course isn't in course list
+                //check if the course is in course list
                 if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
                     message.channel.send('`' + args[1] + '` isn\'t in your course list!');
                     break;
@@ -187,6 +187,31 @@ module.exports = {
                 message.channel.send('successfully updated dates for `' + args[1] + '` to: `' + args[2] + '` - `' + args[3] + '`');
                 break;
                 
+
+            case 'rename':
+                //check for improper number of inputs
+                if(args[1] == undefined || args[2] == undefined || args[3] != undefined){
+                    message.channel.send('Proper use of the command is: `!AB course rename [old name] [new name]`');
+                    break;
+                }
+
+                //check if the course is in course list
+                if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
+                    message.channel.send('`' + args[1] + '` isn\'t in your course list!');
+                    break;
+                }
+
+                //check if name conflicts
+                if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[2]}}) != undefined){
+                    message.channel.send('the name `' + args[2] + '` conflicts with another course!');
+                    break;
+                }
+
+                //succesfully rename
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('course_name', args[2]).save();
+                message.channel.send('Succesfully renamed `' + args[1] + '` to `' + args[2] + '`!');
+
+                break;
             default:
                 message.channel.send("You're a poopoo head that literally isn't an option"); //TODO add proper help command
                 break;
