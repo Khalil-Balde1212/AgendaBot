@@ -125,7 +125,7 @@ module.exports ={
                             }
 
                             for(let i = 0; i < pageSize; i++){
-                                if(reaction.emoji.name == letters[i] && all_work[eval(currentIndex * pageSize + i)] != undefined && user.id == message.author.id){
+                                if(reaction.emoji.name == letters[i] && all_work[eval(currentIndex * pageSize + i)] != undefined && user.id == target.id){
                                     //set completion status
                                     if(all_work[eval(currentIndex * pageSize + i)].get('complete') == false){
                                         all_work[eval(currentIndex * pageSize + i)].set('complete', true).save();
