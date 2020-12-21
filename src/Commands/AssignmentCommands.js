@@ -34,7 +34,7 @@ module.exports ={
 
 
             //agenda view
-            case 'view':
+            case 'list':
                 const letters = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯'];
                 target = message.mentions.users.first() || message.author;
 
@@ -82,10 +82,17 @@ module.exports ={
                     j++;
                 }
 
+                if(menu[0] == undefined){
+                    menu[0] = new discord.MessageEmbed;
+                    menu[0].setTitle(target.username + '\'s agenda')
+                        .setColor((await Users.findOne({where: {user_id: target.id}})).get('fav_colour'))
+                        .setDescription('Impossible. There is no work here!');
+                };
+                
                 menu[0].setFooter('page ' + 1 + ' of ' + eval(menu.length));
 
-
                 var currentIndex = 0;
+
                 message.channel.send(menu[currentIndex]).then(embed => {
                     embed.react('◀️')
                         .then(() => embed.react('▶️'))
