@@ -6,6 +6,14 @@ module.exports = {
 
         switch(args[0]){
             case 'set':
+                var parse = /[0-9A-Fa-f]{6}/g;
+
+                if(parse.test(args[1]) == false){
+                    message.channel.send("Please give your favourite colour as a hexadecimal code!");
+                    break;
+                }
+
+
                 if(args[1] == null){
                     message.channel.send("Proper use of the command is `!AB favcolour set [hexcode]`");
                 } else {
