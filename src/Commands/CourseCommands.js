@@ -8,8 +8,7 @@ module.exports = {
 
         switch(args[0]){
             case "a":
-            case "add": //TODO there is probably a smarter way to do this but my brain is unimaginably small
-
+            case "add":
                 //check if the course is already in the course list
                 if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) != undefined){
                     message.channel.send('`' + args[1] + '` is already on your course list!');
@@ -26,16 +25,17 @@ module.exports = {
                 //check for improper number of arguments
                 if(args[2] != undefined && args[3] == undefined){
                     message.channel.send('Proper use of the command is: `!AB course add [course name] [start date] [end date]`')
+                    break;
                 }
 
                 //check if date inputs are in proper date formatting
                 if(checkValidDate(args[2]) == false){
-                    message.channel.send('`' + args[2] + '` is not in mm/dd/yyyy format');
+                    message.channel.send('`' + args[2] + '` is an invalid date. Make sure you input in `mm/dd/yyyy` format');
                     break;
                 }
 
                 if(checkValidDate(args[3]) == false){
-                    message.channel.send('`' + args[3] + '` is not in mm/dd/yyyy format');
+                    message.channel.send('`' + args[2] + '` is an invalid date. Make sure you input in `mm/dd/yyyy` format');
                     break;
                 }
 
@@ -67,6 +67,7 @@ module.exports = {
             case "list":
                 target = message.mentions.users.first() || message.author;
                 course_list = (await Courses.findAll({where: {user_id: target.id}}));
+
                 const messageEmbed = new discord.MessageEmbed;
                 messageEmbed.setColor((await Users.findOne({where: {user_id: target.id}})).get('fav_colour'));
                 messageEmbed.setTitle(target.username + "'s courses!");
@@ -86,13 +87,82 @@ module.exports = {
                 message.channel.send(messageEmbed);
                 break;
 
+
             case 'setstart':
+                //no date inputs
+                if(args[1] == undefined || args[2] == undefined || args[3] != undefined){
+                    message.channel.send('Proper use of the command is: `!AB course setstart [course] [start date]`');
+                    break;
+                }
+
+                 //check if the course isn't in course list
+                 if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
+                    message.channel.send('`' + args[1] + '` isn\'t in your course list!');
+                    break;
+                }
+
+                //check if date inputs are in proper date formatting
+                if(checkValidDate(args[2]) == false){
+                    message.channel.send('`' + args[2] + '` is an invalid date. Make sure you input in `mm/dd/yyyy` format');
+                    break;
+                }
+                
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('start_date', args[2]).save();
+                message.channel.send('successfully updated the start date for `' + args[1] + '` to: `' + args[2] + '`');
                 break;
                 
+            
             case 'setend':
+                //no date inputs
+                if(args[1] == undefined || args[2] == undefined || args[3] != undefined){
+                    message.channel.send('Proper use of the command is: `!AB course setend [course] [end date]`');
+                    break;
+                }
+
+                 //check if the course isn't in course list
+                 if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
+                    message.channel.send('`' + args[1] + '` isn\'t in your course list!');
+                    break;
+                }
+
+                //check if date inputs are in proper date formatting
+                if(checkValidDate(args[2]) == false){
+                    message.channel.send('`' + args[2] + '` is an invalid date. Make sure you input in `mm/dd/yyyy` format');
+                    break;
+                }
+                
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('end_date', args[2]).save();
+                message.channel.send('successfully updated the end date for `' + args[1] + '` to: `' + args[2] + '`');
                 break;
 
+
             case 'setdates':
+                //no date inputs
+                if(args[1] == undefined || args[2] == undefined || args[3] == undefined){
+                    message.channel.send('Proper use of the command is: `!AB course setdates [course] [start date] [end date]`');
+                    break;
+                }
+
+                //check if the course isn't in course list
+                if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
+                    message.channel.send('`' + args[1] + '` isn\'t in your course list!');
+                    break;
+                }
+
+                //check if date inputs are in proper date formatting
+                if(checkValidDate(args[2]) == false){
+                    message.channel.send('`' + args[2] + '` is an invalid date. Make sure you input in `mm/dd/yyyy` format');
+                    break;
+                }
+
+                if(checkValidDate(args[3]) == false){
+                    message.channel.send('`' + args[2] + '` is an invalid date. Make sure you input in `mm/dd/yyyy` format');
+                    break;
+                }
+
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('start_date', args[2]).save();
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('end_date', args[3]).save();
+                message.channel.send('successfully updated dates for `' + args[1] + '` to: `' + args[2] + '` - `' + args[3] + '`');
                 break;
                 
             default:
