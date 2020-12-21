@@ -1,9 +1,10 @@
 module.exports = {
     name: 'course',
-    description: 'test',
+    description: 'oh you know',
     async execute(discord, message, args, sequelize, dataTypes){
         const Users = require('../Models/User')(sequelize, dataTypes);
         const Courses = require('../Models/Course')(sequelize, dataTypes);
+        const Assignments = require('../Models/Assignment')(sequelize, dataTypes);
 
         switch(args[0]){
             case "a":
@@ -38,6 +39,7 @@ module.exports = {
                     console.log(await Courses.findAll({where: {user_id: message.author.id, course_name: args[1]}}));
                     if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) != undefined){
                         Courses.destroy({where: {user_id: message.author.id, course_name: args[1]}});
+                        Assignments.destroy({where: {user_id: message.author.id, course_name: args[1]}});
                         message.channel.send("Removed " + args[1] + " from your course list!");
                     } else{
                         message.channel.send("You don't even take " + args[1] + "!");

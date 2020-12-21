@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         title: {type: DataTypes.STRING},
         due_date: {
             type: DataTypes.STRING,
-            defaultValue: 'No Duedate Set'
+            defaultValue: 'No Due Date Set'
         },
         complete: {
             type: DataTypes.BOOLEAN,
