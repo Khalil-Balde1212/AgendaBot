@@ -11,7 +11,7 @@ module.exports ={
         const pageSize = 5;
 
         switch(args[0]){
-            case 'add':
+            case 'add': //!AB work add [course] [title] [due date]
                 //check for misused command
                 if(args[1] == undefined){
                     message.channel.send('Proper use of the command is: `!AB work add [course name] [start date] [end date]`');
@@ -29,17 +29,20 @@ module.exports ={
                     break;
                 };
 
-
+                //check                 
                 if(args[3] == undefined){
                     Assignments.create({user_id: message.author.id, course_name: args[1], title: args[2]});
                     message.channel.send("Added `" + args[2] + "` to `" + args[1] + "`");
+                    break;
+                }
+
+                //check valid date
+                if(checkValidDate(args[3]) == true){
+                    Assignments.create({user_id: message.author.id, course_name: args[1], title: args[2], due_date: args[3]});
+                    message.channel.send("Added `" + args[2] + "` to `" + args[1] + '`. Due at: `' + args[3] + '`');
+                    break;
                 } else {
-                    if(args[3].charAt(2) != '/' || args[3].charAt(5) != '/') {
-                        message.channel.send("Please put dates in the form mm/dd/yyyy hh:mm");
-                    } else {
-                        Assignments.create({user_id: message.author.id, course_name: args[1], title: args[2], due_date: args[3]});
-                        message.channel.send("Added `" + args[2] + "` to `" + args[1] + "`");
-                    }
+                    message.channel.send('`' + args[3] + '` is not a valid date format! Make sure it\'s in mm/dd/yyyy hh:mm am/pm');
                 }
                 break;
 
@@ -77,12 +80,15 @@ module.exports ={
                         if(all_work[j*pageSize + k] == undefined) break;
 
                         //set the letters to be appropriate
-                        if(all_work[j*pageSize + k].get('complete') == false){
-                            emote = letters[k];
-                        } else {
+                        if(all_work[j*pageSize + k].get('complete') == false)
+                            emote = letters[k]
+                         else
                             emote = '✅';
-                        };
-                        agenda += emote + ' ' + all_work[j*pageSize + k].get('course_name') + ': ' + all_work[j*pageSize + k].get('title') + ' - ' + all_work[j*pageSize + k].get('due_date') + '\n\n';
+                            
+                        agenda += 
+                            emote + ' ' + all_work[j*pageSize + k].get('course_name') + 
+                            ': ' + all_work[j*pageSize + k].get('title') + 
+                            ' - ' + all_work[j*pageSize + k].get('due_date') + '\n\n';
                     }
 
                     //add page to the menu
@@ -180,7 +186,7 @@ module.exports ={
                         embed.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
                         embed.react('❌');
                     })
-                })
+                });
 
 
                 break;
@@ -205,7 +211,7 @@ function checkValidDate(dateString){
         return false;
     }
     
-    if(/^\d{1,2}:\d{2}\s([ap]m)?$/.test(parts[1]) ||/^\d{1,2}:\d{2}([ap]m)?$/.test(parts[1])){
+    if(/^\d{1,2}:\d{2}\s([ap]m)?$/.test(parts[1])){
         console.log('time invalid')
         return false;
     }
@@ -229,5 +235,5 @@ function checkValidDate(dateString){
         monthLength[1] = 29;
 
     // Check the range of the day
-    return (day > 0 && day <= monthLength[month - 1]) && (hour > 0 && hour <= 12) && (minute > 0 && minute < 60);
+    return (day > 0 && day <= monthLength[month - 1]) && (hour >= 0 && hour <= 12) && (minute >= 0 && minute < 60);
 }
