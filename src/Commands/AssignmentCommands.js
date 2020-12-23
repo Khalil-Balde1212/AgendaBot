@@ -187,16 +187,10 @@ module.exports ={
                         embed.react('❌');
                     })
                 });
-
-
-                break;
-
-            case 'test':
-                console.log(checkValidDate(args[1]));
                 break;
 
             default: 
-                message.channel.send("henlo");
+                message.channel.send("henlo");  
                 break;
         }
     }
