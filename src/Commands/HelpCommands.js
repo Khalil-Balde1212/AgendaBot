@@ -44,7 +44,7 @@ module.exports ={
         .setTitle('**AgendaBot Work Commands**')
         .setDescription(
             'List of all work commands\n\n'+
-            '**!AB work list\n' +
+            '**!AB work list**\n' +
             'Show all your work \n\n' +
             '**!AB work list [course name]**\n' +
             'Show all your work for a specific course\n\n' +
@@ -52,9 +52,23 @@ module.exports ={
             'Add an assignment to your agenda without a due date\n\n' +
             '**!AB work add [course name] [assignment name] [due date]**\n' +
             'Add an assignment to your agenda with a due date\n\n' + 
-            '**!AB work remove [course name] [assignment title]\n' +
+            '**!AB work remove [course name] [assignment title]**\n' +
             'Remove an assignment from your agenda'
         );
+
+        menu[3] = new discord.MessageEmbed;
+        menu[3].setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'))
+        .setTitle('**AgendaBot Work Commands**')
+        .setDescription(
+            'List of all favourite colour commands\n\n'+
+            '**!AB favcol**\n' +
+            'Show your favourite colour \n\n' +
+            '**!AB favcol @person**\n' +
+            'See somebody elses favourite colour \n\n' +
+            '**!AB favcol set [hex code]**\n' +
+            'Set your new favourite colour \n\n'
+        );
+
         menuReaction = ['⬅️', '1️⃣', '2️⃣', '3️⃣'];
         // '4️⃣', '5️⃣', '6️⃣' Just in case
 
@@ -65,7 +79,7 @@ module.exports ={
 
             const collector = embed.createReactionCollector(
                 (reaction, user) => (menuReaction.includes(reaction.emoji.name)),
-                {time: 300000}
+                {time: 30000}
             )
 
             collector.on('collect', async (reaction, user) => {
