@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
         fav_colour: {
             type: DataTypes.INTEGER,
             defaultValue: '0xFF6A39'
+        },
+        time_zone: {
+            type: DataTypes.STRING,
+            defaultValue: 'EST'
         }
     }, {
         timestamps: false,
