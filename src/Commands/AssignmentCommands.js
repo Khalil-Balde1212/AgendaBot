@@ -47,6 +47,26 @@ module.exports ={
                 break;
 
             case 'remove':
+                //check if proper number of inputs
+                if(args[2] == undefined || args[3] != undefined){
+                    message.channel.send('proper use of the command is: `!AB work remove [course name] [assignment name]`');
+                    break;
+                }
+
+                //check if the course isn't on their courselist
+                if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
+                    message.channel.send('`' + args[1] + '` isn\'t on your course list!');
+                    break;
+                }
+
+                //check if the assignment is on your work list
+                if(await Assignments.findOne({where: {user_id: message.author.id, title: args[2]}}) == undefined){
+                    message.channel.send('`' + args[1] + '` isn\'t on your agenda!');
+                    break;
+                }
+
+                Assignments.destroy({where: {user_id: message.author.id, course_name: args[1], title: args[2]}});
+                message.channel.send("`" + args[2] + '` for `' + args[1]+ "` was removed from your agenda!");
                 break;
 
 
@@ -87,7 +107,7 @@ module.exports ={
                             
                         agenda += 
                             emote + ' ' + all_work[j*pageSize + k].get('course_name') + 
-                            ': ' + all_work[j*pageSize + k].get('title') + 
+                            ' : ' + all_work[j*pageSize + k].get('title') + 
                             ' - ' + all_work[j*pageSize + k].get('due_date') + '\n\n';
                     }
 
