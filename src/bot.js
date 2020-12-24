@@ -47,7 +47,7 @@ client.once('ready', async () => {
     Courses.sync();
     Assignments.sync();
 
-    const scheduledMessage = new cron.CronJob('* * * * *', () => {
+    const scheduledMessage = new cron.CronJob('*/10 * * * *', () => {
         temp = Assignments.findAll({where: {complete: false}}).then((result) => {
             var today = new Date();
 
