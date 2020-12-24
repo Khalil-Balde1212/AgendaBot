@@ -14,12 +14,12 @@ module.exports ={
             case 'add': //!AB work add [course] [title] [due date]
                 //check for misused command
                 if(args[1] == undefined){
-                    message.channel.send('Proper use of the command is: `!AB work add [course name] [start date] [end date]`');
+                    message.channel.send('Proper use of the command is: `!AB work add [course name] [assignment name] [due date]`');
                     break;
                 }
 
                 if(args[2] != undefined && args[3] == undefined){
-                    message.channel.send('Proper use of the command is: `!AB work add [course name] [start date] [end date]`');
+                    message.channel.send('Proper use of the command is: `!AB work add [course name] [assignment name] [due date]`');
                     break;
                 }
 

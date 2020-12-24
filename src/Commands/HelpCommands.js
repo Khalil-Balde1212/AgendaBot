@@ -55,9 +55,35 @@ module.exports ={
             '**!AB work remove [course name] [assignment title]\n' +
             'Remove an assignment from your agenda'
         );
+        menuReaction = ['⬅️', '1️⃣', '2️⃣', '3️⃣'];
+        // '4️⃣', '5️⃣', '6️⃣' Just in case
 
-        message.author.send(menu[0]);
-        message.author.send(menu[1]);
-        message.author.send(menu[2]);
+        message.channel.send(menu[0]).then(embed => {
+            for(let i of menuReaction){
+                embed.react(i);
+            };
+
+            const collector = embed.createReactionCollector(
+                (reaction, user) => (menuReaction.includes(reaction.emoji.name)),
+                {time: 300000}
+            )
+
+            collector.on('collect', async (reaction, user) => {
+                if(user.id == '784662811246723112') return;
+                reaction.users.remove(user.id);
+
+                for(let i in menuReaction){
+                    if(reaction.emoji.name == menuReaction[i]){
+                        embed.edit(menu[i]);
+                    }
+                }
+
+            });
+
+            collector.on('end', reaction =>{
+                embed.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+                embed.react('❌');
+            });
+        });
     }
 }
