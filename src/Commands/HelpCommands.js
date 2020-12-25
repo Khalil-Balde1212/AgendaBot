@@ -79,7 +79,7 @@ module.exports ={
 
             const collector = embed.createReactionCollector(
                 (reaction, user) => (menuReaction.includes(reaction.emoji.name)),
-                {time: 30000}
+                {time: 300000}
             )
 
             collector.on('collect', async (reaction, user) => {
