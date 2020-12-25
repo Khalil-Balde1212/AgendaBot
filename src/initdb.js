@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: 'test.db'
+    storage: 'agendabase.db'
 });
 
 try {

@@ -40,7 +40,7 @@ module.exports = {
                 }
 
                 //succesful!
-                Courses.create({user_id: message.author.id, course_name: args[1], start_date: args[2], start_date: args[3]});
+                Courses.create({user_id: message.author.id, course_name: args[1], start_date: stringToDate(args[2]), end_date: stringToDate(args[3])});
                 message.channel.send(
                     'added `' + args[1] + '` to your course list! \n' + 
                     'starts on: `' + args[2] + '`\n' +
@@ -100,8 +100,8 @@ module.exports = {
                 coursetxt = target.username + " is currently enrolled in\n \n"
                 for(i = 0; i < course_list.length; i++){
                     coursetxt += '**' + course_list[i].get('course_name') + '**\n' +
-                        'Starts on: ' + course_list[i].get('start_date') + '\n' + 
-                        'Finished on: ' + course_list[i].get('end_date') + '\n\n';
+                        'Starts on: ' + course_list[i].get('start_date').toString() + '\n' + 
+                        'Finished on: ' + course_list[i].get('end_date').toString() + '\n\n';
                 }
 
                 messageEmbed.setDescription(coursetxt);
@@ -129,7 +129,7 @@ module.exports = {
                     break;
                 }
                 
-                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('start_date', args[2]).save();
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('start_date', stringToDate(args[2])).save();
                 message.channel.send('successfully updated the start date for `' + args[1] + '` to: `' + args[2] + '`');
                 break;
                 
@@ -153,7 +153,7 @@ module.exports = {
                     break;
                 }
                 
-                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('end_date', args[2]).save();
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('end_date', stringToDate(args[2])).save();
                 message.channel.send('successfully updated the end date for `' + args[1] + '` to: `' + args[2] + '`');
                 break;
 
@@ -182,8 +182,8 @@ module.exports = {
                     break;
                 }
 
-                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('start_date', args[2]).save();
-                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('end_date', args[3]).save();
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('start_date', stringToDate(args[2])).save();
+                (await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}})).set('end_date', stringToDate(args[3])).save();
                 message.channel.send('successfully updated dates for `' + args[1] + '` to: `' + args[2] + '` - `' + args[3] + '`');
                 break;
                 
@@ -243,4 +243,18 @@ function checkValidDate(dateString){
 
     // Check the range of the day
     return day > 0 && day <= monthLength[month - 1];
+}
+
+function stringToDate(datestring){
+    if(checkValidDate(datestring) == false){
+        return;
+    }
+
+    var parts = datestring.toUpperCase().split("/");
+    var dd = parseInt(parts[1], 10);
+    var mm = parseInt(parts[0], 10);
+    var yyyy = parseInt(parts[2], 10);
+
+    // Check the range of the day
+    return new Date(yyyy, mm, dd, 0, 0, 0, 0);
 }

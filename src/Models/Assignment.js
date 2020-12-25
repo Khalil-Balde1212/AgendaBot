@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         course_name: {type: DataTypes.STRING},
         title: {type: DataTypes.STRING},
         due_date: {
-            type: DataTypes.STRING,
+            type: DataTypes.DATE,
             defaultValue: 'No Due Date Set'
         },
         complete: {

@@ -48,24 +48,13 @@ client.once('ready', async () => {
     Assignments.sync();
 
     const scheduledMessage = new cron.CronJob('*/10 * * * *', () => {
-        temp = Assignments.findAll({where: {complete: false}}).then((result) => {
+        Assignments.findAll({where: {complete: false}}).then((result) => {
             var today = new Date();
 
             result.forEach(async (temp) => {
-                var parts = temp.get('due_date').toUpperCase().split(" ");
-            
-                // Parse the date parts to integers
-                parts = parts[0].split("/").concat(parts[1].split(":"));
-                var minute = parseInt(parts[4].substring(0, 2), 10);
-                var hour = parseInt(parts[3], 10) + 12 * (parts[4].substring(2,4) == 'PM');
-                var day = parseInt(parts[1], 10);
-                var month = parseInt(parts[0], 10) - 1;
-                var year = parseInt(parts[2], 10);
-                
-                dueDate = new Date(year, month, day, hour, minute, 0, 0);
-
+                var dueDate = temp.get('due_date');
                 var todayts = Math.round(today.getTime() / 1000);
-                var duedatets = Math.round(dueDate.getTime() / 1000);
+                var duedatets = Math.round(temp.get('due_date').getTime() / 1000);
 
                 owner = temp.get('user_id');
                 worktitle = temp.get('title');
@@ -81,11 +70,11 @@ client.once('ready', async () => {
 
                         if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
                             if(i == 0){
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date') + '`');
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date').toString() + '`');
                                 break;
                             }
 
-                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + temp.get('due_date') + '`');
+                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + temp.get('due_date').toString() + '`');
                         }
                     }
                 } else { //work is over due
@@ -94,11 +83,11 @@ client.once('ready', async () => {
                         
                         if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
                             if(i == 0){
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date') + '`');
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date').toString() + '`');
                                 break;
                             }
 
-                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + temp.get('due_date') + '`');
+                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + temp.get('due_date').toString() + '`');
                         }
                     }
                 }
