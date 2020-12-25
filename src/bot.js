@@ -78,15 +78,27 @@ client.once('ready', async () => {
                 //check if due date is coming up
                 if(dueDate > today){
                     for(let i of checkhours){
+
                         if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
+                            if(i == 0){
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date') + '`');
+                                break;
+                            }
+
                             (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + temp.get('due_date') + '`');
                         }
                     }
                 } else { //work is over due
                     delta = todayts - duedatets;
                     for(let i of checkhours){
-                        if(delta <=  i*3600 + 10*60 && delta >= i*3600 - 10*60){ //check if due in 24 hours
-                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! `' + temp.get('due_date') + '`');
+                        
+                        if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
+                            if(i == 0){
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date') + '`');
+                                break;
+                            }
+
+                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + temp.get('due_date') + '`');
                         }
                     }
                 }
