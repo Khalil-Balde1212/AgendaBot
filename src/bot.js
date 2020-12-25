@@ -70,11 +70,11 @@ client.once('ready', async () => {
 
                         if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
                             if(i == 0){
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date').toString() + '`');
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
                                 break;
                             }
 
-                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + temp.get('due_date').toString() + '`');
+                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + dateToString(temp.get('due_date')) + '`');
                         }
                     }
                 } else { //work is over due
@@ -83,11 +83,11 @@ client.once('ready', async () => {
                         
                         if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
                             if(i == 0){
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + temp.get('due_date').toString() + '`');
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
                                 break;
                             }
 
-                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + temp.get('due_date').toString() + '`');
+                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + dateToString(temp.get('due_date')) + '`');
                         }
                     }
                 }
@@ -142,3 +142,18 @@ client.on('message', async message => {
 		message.reply('there was an error trying to execute that command!');
     }
 });
+
+function dateToString(date){
+    var yyyy = date.getFullYear().toString().padStart(4, '0');
+    var mm = (date.getMonth() + 1).toString().padStart(2, '0');
+    var dd = date.getDate().toString().padStart(2, '0');
+    var hh = date.getHours().toString().padStart(2, '0');
+    var min = date.getMinutes().toString().padStart(2, '0');
+    var noon = 'am'
+    if(hh >= 12){
+        hh = hh - 12;
+        noon = 'pm'
+    }
+
+    return mm + '/' + dd + '/' + yyyy + ' ' + hh + ':' + min + noon;
+}

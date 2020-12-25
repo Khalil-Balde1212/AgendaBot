@@ -100,8 +100,8 @@ module.exports = {
                 coursetxt = target.username + " is currently enrolled in\n \n"
                 for(i = 0; i < course_list.length; i++){
                     coursetxt += '**' + course_list[i].get('course_name') + '**\n' +
-                        'Starts on: ' + course_list[i].get('start_date').toString() + '\n' + 
-                        'Finished on: ' + course_list[i].get('end_date').toString() + '\n\n';
+                        'Starts on: ' + dateToString(course_list[i].get('start_date')) + '\n' + 
+                        'Finished on: ' + dateToString(course_list[i].get('end_date')) + '\n\n';
                 }
 
                 messageEmbed.setDescription(coursetxt);
@@ -257,4 +257,12 @@ function stringToDate(datestring){
 
     // Check the range of the day
     return new Date(yyyy, mm, dd, 0, 0, 0, 0);
+}
+
+function dateToString(date){
+    var yyyy = date.getFullYear().toString().padStart(4, '0');
+    var mm = (date.getMonth() + 1).toString().padStart(2, '0');
+    var dd = date.getDate().toString().padStart(2, '0');
+
+    return mm + '/' + dd + '/' + yyyy
 }

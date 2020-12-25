@@ -80,14 +80,14 @@ module.exports ={
                 
                 //display work for all courses
                 if(args[1] == undefined){
-                    all_work = (await Assignments.findAll({order: [['due_date', 'DESC']], where: {user_id: target.id}}));
+                    all_work = (await Assignments.findAll({order: [['due_date', 'ASC']], where: {user_id: target.id}}));
                 } else {
                     if(await Courses.findOne({where: {user_id: message.author.id, course_name: args[1]}}) == undefined){
                         message.channel.send('`' + args[1] + "` isn't on your course list!");
                         break;
                     };
 
-                    all_work = (await Assignments.findAll({order: [['due_date', 'DESC']], where: {user_id: target.id}}));
+                    all_work = (await Assignments.findAll({order: [['due_date', 'ASC']], where: {user_id: target.id}}));
                 }
 
                 //assign to menu pages
@@ -108,7 +108,7 @@ module.exports ={
                         agenda += 
                             emote + ' ' + all_work[j*pageSize + k].get('course_name') + 
                             ' : ' + all_work[j*pageSize + k].get('title') + 
-                            ' - ' + all_work[j*pageSize + k].get('due_date').toString() + '\n\n';
+                            ' - ' + dateToString(all_work[j*pageSize + k].get('due_date')) + '\n\n';
                     }
 
                     //add page to the menu
@@ -245,7 +245,7 @@ module.exports ={
                         agenda += 
                             emote + ' ' + all_work[j*pageSize + k].get('course_name') + 
                             ' : ' + all_work[j*pageSize + k].get('title') + 
-                            ' - ' + all_work[j*pageSize + k].get('due_date').toString() + '\n\n';
+                            ' - ' + dateToString(all_work[j*pageSize + k].get('due_date')) + '\n\n';
                     }
 
                     //add page to the menu
@@ -329,7 +329,7 @@ module.exports ={
                                         } else {
                                             emote = '✅';
                                         };
-                                        agenda += emote + ' ' + all_work[currentIndex*pageSize + k].get('course_name') + ': ' + all_work[currentIndex*pageSize + k].get('title') + ' - ' + all_work[currentIndex*pageSize + k].get('due_date').toString() + '\n\n';
+                                        agenda += emote + ' ' + all_work[currentIndex*pageSize + k].get('course_name') + ': ' + all_work[currentIndex*pageSize + k].get('title') + ' - ' + dateToString(all_work[currentIndex*pageSize + k].get('due_date')) + '\n\n';
                                     }
 
                                     menu[currentIndex].setDescription(agenda);
@@ -404,4 +404,19 @@ function stringToDate(datestring){
 
     // Check the range of the day
     return new Date(yyyy, mm, dd, hh, min, 0, 0);
+}
+
+function dateToString(date){
+    var yyyy = date.getFullYear().toString().padStart(4, '0');
+    var mm = (date.getMonth() + 1).toString().padStart(2, '0');
+    var dd = date.getDate().toString().padStart(2, '0');
+    var hh = date.getHours().toString().padStart(2, '0');
+    var min = date.getMinutes().toString().padStart(2, '0');
+    var noon = 'am'
+    if(hh >= 12){
+        hh = hh - 12;
+        noon = 'pm'
+    }
+
+    return mm + '/' + dd + '/' + yyyy + ' ' + hh + ':' + min + noon;
 }
