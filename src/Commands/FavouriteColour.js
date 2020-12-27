@@ -28,12 +28,8 @@ module.exports = {
             //by default the program will just return the colour
             default:
                 target = message.mentions.users.first() || message.author;
-                try{//try finding user
-                    fav = (await Users.findOne({where: {user_id: target.id}})).get('fav_colour');
-                } catch { //user doesn't exist
-                    Users.create({user_id: target.id});
-                    fav = (await Users.findOne({where: {user_id: target.id}})).get('fav_colour');
-                }
+                //try finding user
+                fav = (await Users.findOne({where: {user_id: target.id}})).get('fav_colour');
                 message.channel.send(target.toString() + "'s favourite colour is: `" + fav + "`");
                 break;
         }

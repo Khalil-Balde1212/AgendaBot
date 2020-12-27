@@ -6,14 +6,10 @@ module.exports = {
         const Users = require('../Models/User')(sequelize, dataTypes);
 
         //create embeded message
-        try{
-            messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
-        } catch{
-            messageEmbed.setColor('#FF6A39');
-        }
-            messageEmbed.setTitle("test");
-            messageEmbed.setDescription("epic");
+        messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
+        messageEmbed.setTitle("test");
+        messageEmbed.setDescription("epic");
 
-            message.channel.send(messageEmbed);
+        message.channel.send(messageEmbed);
     }
 }
