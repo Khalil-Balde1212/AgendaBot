@@ -30,7 +30,12 @@ module.exports ={
                     break;
                 };
 
-                //check                 
+                // check if assignment is already on the agenda
+                if(await Assignments.findOne({where: {user_id: message.author.id, course_name: args[1], title: args[2]}}) != undefined){
+                    message.channel.send('`' + args[2] + "` is already in your agenda!");
+                    break;
+                };
+        
                 if(args[3] == undefined){
                     Assignments.create({user_id: message.author.id, course_name: args[1], title: args[2]});
                     message.channel.send("Added `" + args[2] + "` to `" + args[1] + "`");
