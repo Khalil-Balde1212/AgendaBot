@@ -1,5 +1,3 @@
-const Assignment = require('../Models/Assignment');
-
 module.exports ={
     name: 'work',
     description: 'oh you know',
