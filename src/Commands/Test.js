@@ -6,12 +6,8 @@ module.exports = {
         const Users = require('../Models/User')(sequelize, dataTypes);
 
         //create embeded message
-        try{
-            messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
-        } catch (err){
-            console.log('There was an error finding user\'s favourite coolour!');
-        }
-        messageEmbed.setTitle("test");
+        messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
+        geEmbed.setTitle("test");
         messageEmbed.setDescription("epic");
 
         message.channel.send(messageEmbed);
