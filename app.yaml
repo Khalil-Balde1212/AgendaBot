@@ -14,6 +14,4 @@
 # [START bookshelf_app_yml]
 runtime: nodejs14
 
-instance_class: F2
-
 # [END bookshelf_app_yml]
