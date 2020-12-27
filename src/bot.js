@@ -17,6 +17,7 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
+
 client.login(process.env.BOT_TOKEN).then(() => console.log("Bot is logged in!"));
 
 
@@ -64,32 +65,36 @@ client.once('ready', async () => {
 
                 checkhours = [72, 24, 12, 6, 4, 2, 1, 0];
 
+                try{
                 //check if due date is coming up
-                if(dueDate > today){
-                    for(let i of checkhours){
+                    if(dueDate > today){
+                        for(let i of checkhours){
 
-                        if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
-                            if(i == 0){
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
-                                break;
+                            if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
+                                if(i == 0){
+                                    (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
+                                    break;
+                                }
+
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + dateToString(temp.get('due_date')) + '`');
                             }
+                        }
+                    } else { //work is over due
+                        delta = todayts - duedatets;
+                        for(let i of checkhours){
+                            
+                            if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
+                                if(i == 0){
+                                    (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
+                                    break;
+                                }
 
-                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + dateToString(temp.get('due_date')) + '`');
+                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + dateToString(temp.get('due_date')) + '`');
+                            }
                         }
                     }
-                } else { //work is over due
-                    delta = todayts - duedatets;
-                    for(let i of checkhours){
-                        
-                        if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
-                            if(i == 0){
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
-                                break;
-                            }
-
-                            (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + dateToString(temp.get('due_date')) + '`');
-                        }
-                    }
+                } catch {
+                    console.log('Error running message scheduler!')
                 }
             });
         });
