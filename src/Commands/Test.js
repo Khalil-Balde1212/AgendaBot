@@ -7,7 +7,7 @@ module.exports = {
 
         //create embeded message
         messageEmbed.setColor((await Users.findOne({where: {user_id: message.author.id}})).get('fav_colour'));
-        geEmbed.setTitle("test");
+        messageEmbed.setTitle("test");
         messageEmbed.setDescription("epic");
 
         message.channel.send(messageEmbed);
