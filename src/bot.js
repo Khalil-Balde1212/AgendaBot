@@ -25,7 +25,7 @@ client.login(process.env.BOT_TOKEN).then(() => console.log("Bot is logged in!"))
 prefix = process.env.COMMAND_PREFIX;
 
 //all the sequelize stuff
-const sequelize = new Sequelize({
+const sequelize = new Sequelize('database', 'username', 'password', {
     host: process.env.IP,
 	dialect: 'mysql',
 	logging: false,
