@@ -28,8 +28,7 @@ prefix = process.env.COMMAND_PREFIX;
 const sequelize = new Sequelize('database', 'username', 'password', {
     host: process.env.IP,
 	dialect: 'mysql',
-	logging: false,
-    storage: process.env.DBPATH
+	logging: false
 })
 
 try {
