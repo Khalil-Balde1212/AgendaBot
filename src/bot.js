@@ -5,6 +5,7 @@ const cron = require('cron');
 const { Sequelize } = require('sequelize');
 const { Console } = require('console');
 const { createConnection } = require('net');
+const { exit } = require('process');
 
 const client = new discord.Client();
 client.commands = new discord.Collection();
@@ -25,15 +26,16 @@ prefix = process.env.COMMAND_PREFIX;
 
 //all the sequelize stuff
 const sequelize = new Sequelize({
-    host: 'localhost',
-	dialect: 'sqlite',
+    host: process.env.IP,
+	dialect: 'mysql',
 	logging: false,
     storage: process.env.DBPATH
-});
+})
 
 try {
-    sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    sequelize.authenticate().then(() => {
+        console.log('Connection has been established successfully.');
+    });
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
@@ -41,6 +43,7 @@ try {
 const Users = require('./Models/User')(sequelize, Sequelize.DataTypes);
 const Courses = require('./Models/Course')(sequelize, Sequelize.DataTypes);
 const Assignments = require('./Models/Assignment')(sequelize, Sequelize.DataTypes);
+
 
 
 client.once('ready', async () => {

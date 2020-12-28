@@ -4,8 +4,13 @@
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
+    "npm": "^7.3.0",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.5",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.0",
+    "stable": "^0.1.8"
   },
   "name": "AgendaBot",
   "version": "1.0.0",
