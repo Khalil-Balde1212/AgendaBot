@@ -221,6 +221,10 @@ module.exports = {
                 message.channel.send('Succesfully renamed `' + args[1] + '` to `' + args[2] + '`!');
 
                 break;
+
+            // case 'test':
+            //     message.channel.send(stringToDate('12/12/2021').toString());
+            //     break;
             default:
                 message.channel.send("You're a poopoo head that literally isn't an option"); //TODO add proper help command
                 break;
@@ -261,7 +265,7 @@ function stringToDate(datestring){
 
     var parts = datestring.toUpperCase().split("/");
     var dd = parseInt(parts[1], 10);
-    var mm = parseInt(parts[0], 10);
+    var mm = parseInt(parts[0], 10) - 1;
     var yyyy = parseInt(parts[2], 10);
 
     // Check the range of the day
@@ -269,8 +273,8 @@ function stringToDate(datestring){
 }
 
 function dateToString(date){
-    var yyyy = Date(date.getFullyear()).toString().padStart(4, '0');
-    var mm = Date(date.getMonth() + 1).toString().padStart(2, '0');
-    var dd = Date(date.getDate()).toString().padStart(2, '0');
+    var yyyy = date.getFullYear().toString().padStart(4, '0');
+    var mm = (date.getMonth() + 1).toString().padStart(2, '0');
+    var dd = date.getDate().toString().padStart(2, '0');
     return mm + '/' + dd + '/' + yyyy
 }
