@@ -1,3 +1,3 @@
 runtime: nodejs12
-
-instance_class: F2
+beta_settings:
+  cloud_sql_instances: {'agendabot-300000:us-central1:my-sql-database'}

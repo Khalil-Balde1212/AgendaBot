@@ -3,9 +3,6 @@ const fs = require('fs');
 const discord = require('discord.js');
 const cron = require('cron');
 const { Sequelize } = require('sequelize');
-const { Console } = require('console');
-const { createConnection } = require('net');
-const { exit } = require('process');
 
 const client = new discord.Client();
 client.commands = new discord.Collection();
@@ -25,10 +22,10 @@ client.login(process.env.BOT_TOKEN).then(() => console.log("Bot is logged in!"))
 prefix = process.env.COMMAND_PREFIX;
 
 //all the sequelize stuff
-const sequelize = new Sequelize('agendabase', process.env.USERNAME, process.env.PASSWORD, {
-    host: process.env.IP,
+const sequelize = new Sequelize('agendabase', 'root', 'root', {
+    host: '/cloudsql/agendabot-300000:us-central1:my-sql-database',
 	dialect: 'mysql',
-	logging: false
+    logging: false,
 })
 
 try {
