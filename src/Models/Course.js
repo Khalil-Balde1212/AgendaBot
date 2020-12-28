@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         course_name: {
             type: DataTypes.STRING
         },
-        start_date: {type: DataTypes.DATEONLY, defaultValue: 'No date inputted'},
-        end_date: {type: DataTypes.DATEONLY, defaultValue: 'No date inputted'}
+        start_date: {type: DataTypes.DATEONLY, defaultValue: '00/00/0000'},
+        end_date: {type: DataTypes.DATEONLY, defaultValue: '00/00/0000'}
     });    
 };

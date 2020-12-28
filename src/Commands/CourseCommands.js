@@ -98,10 +98,18 @@ module.exports = {
                 console.log(target.avatarURL());
 
                 coursetxt = target.username + " is currently enrolled in\n \n"
+                if(dateToString(course_list[i].get('start_date')) == '00/00/0000'){
+                    startstring = 'No date inputted';
+                    endstring = 'No date inputted';
+                } else {
+                    startstring = dateToString(course_list[i].get('start_date'));
+                    endstring = dateToString(course_list[i].get('end_date'));
+                }
+
                 for(i = 0; i < course_list.length; i++){
                     coursetxt += '**' + course_list[i].get('course_name') + '**\n' +
-                        'Starts on: ' + dateToString(course_list[i].get('start_date')) + '\n' + 
-                        'Finished on: ' + dateToString(course_list[i].get('end_date')) + '\n\n';
+                        'Starts on: ' + startstring + '\n' + 
+                        'Finished on: ' + endstring + '\n\n';
                 }
 
                 messageEmbed.setDescription(coursetxt);
