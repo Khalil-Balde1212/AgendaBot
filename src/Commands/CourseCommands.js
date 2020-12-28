@@ -269,9 +269,9 @@ function stringToDate(datestring){
 }
 
 function dateToString(date){
-    var yyyy = date.getFullYear().toString().padStart(4, '0');
-    var mm = (date.getMonth() + 1).toString().padStart(2, '0');
-    var dd = date.getDate().toString().padStart(2, '0');
+    var yyyy = Date(date.getFullYear()).toString().padStart(4, '0');
+    var mm = Date(date.getMonth() + 1).toString().padStart(2, '0');
+    var dd = Date(date.getDate()).toString().padStart(2, '0');
 
     return mm + '/' + dd + '/' + yyyy
 }
