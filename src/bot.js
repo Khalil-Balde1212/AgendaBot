@@ -25,6 +25,7 @@ client.once('ready', async () => {
          
 });
 
+//Invoke on message recieved
 client.on('message', async message => {
     if(message.author.bot) return;
     if(!message.content.startsWith(prefix)) return;
@@ -32,27 +33,14 @@ client.on('message', async message => {
     //command argument setup
     msg = message.content;
 
-    //seperate prefix, command and subcommands
-    args = new Array;
-    for(i = 0; i < 3; i++){
-        args[i] = msg.substring(0, msg.indexOf(' ')); 
-        msg = msg.slice(args[i].length).trim() +  " ";
-    }
-
-    //get all args
-    while(msg.substring(0, msg.indexOf(']') + 1) != ""){ 
-        args[i] = msg.substring(0, msg.indexOf(']') + 1);
-        msg = msg.slice(args[i].length).trim() +  " ";
-        args[i] = args[i].replace(/[\[\]']+/g,'')
-        i++;
-    }
-    args.shift();
-    const command = args.shift().toLowerCase();
+    
+    const command = msg;
 
     if (!client.commands.has(command)) {
         message.channel.send('Unknown command, type `!AB help` for all the commands!');
         return;
     }
+    
     //check if user already exists in db
     try{
         await Users.create({ user_id: message.author.id});
