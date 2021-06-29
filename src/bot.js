@@ -1,8 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
 const discord = require('discord.js');
-const cron = require('cron');
-const { Sequelize } = require('sequelize');
 
 const client = new discord.Client();
 client.commands = new discord.Collection();
@@ -21,85 +19,10 @@ client.login(process.env.BOT_TOKEN).then(() => console.log("Bot is logged in!"))
 
 prefix = process.env.COMMAND_PREFIX;
 
-//all the sequelize stuff
-const sequelize = new Sequelize('agendabase', 'root', 'root', {
-    host: '/cloudsql/agendabot-300000:us-central1:my-sql-database',
-	dialect: 'mysql',
-    logging: false,
-})
 
-try {
-    sequelize.authenticate().then(() => {
-        console.log('Connection has been established successfully.');
-    });
-} catch (error) {
-    console.error('Unable to connect to the database:', error);
-}
-
-const Users = require('./Models/User')(sequelize, Sequelize.DataTypes);
-const Courses = require('./Models/Course')(sequelize, Sequelize.DataTypes);
-const Assignments = require('./Models/Assignment')(sequelize, Sequelize.DataTypes);
-
-
-
+//invoke on ready
 client.once('ready', async () => {
-    Users.sync();
-    Courses.sync();
-    Assignments.sync();
-
-    const scheduledMessage = new cron.CronJob('*/10 * * * *', () => {
-        Assignments.findAll({where: {complete: false}}).then((result) => {
-            var today = new Date();
-
-            result.forEach(async (temp) => {
-                var dueDate = temp.get('due_date');
-                var todayts = Math.round(today.getTime() / 1000);
-                var duedatets = Math.round(temp.get('due_date').getTime() / 1000);
-
-                owner = temp.get('user_id');
-                worktitle = temp.get('title');
-                coursename = temp.get('course_name');
-
-                delta = duedatets - todayts;
-
-                checkhours = [72, 24, 12, 6, 4, 2, 1, 0];
-
-                try{
-                //check if due date is coming up
-                    if(dueDate > today){
-                        for(let i of checkhours){
-
-                            if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
-                                if(i == 0){
-                                    (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
-                                    break;
-                                }
-
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due in ' + i +  ' hours! `' + dateToString(temp.get('due_date')) + '`');
-                            }
-                        }
-                    } else { //work is over due
-                        delta = todayts - duedatets;
-                        for(let i of checkhours){
-                            
-                            if(delta <=  i*3600 + 5*60 && delta >= i*3600 - 5*60){ //check if due in 24 hours
-                                if(i == 0){
-                                    (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is due now! Due date: `' + dateToString(temp.get('due_date')) + '`');
-                                    break;
-                                }
-
-                                (await client.users.fetch(owner)).send('`' + worktitle + '` for `' + coursename + '` is overdue by ' + i +  ' hours! Due date: `' + dateToString(temp.get('due_date')) + '`');
-                            }
-                        }
-                    }
-                } catch {
-                    console.log('Error running message scheduler!')
-                }
-            });
-        });
-    });
-
-    scheduledMessage.start();
+         
 });
 
 client.on('message', async message => {
@@ -140,7 +63,7 @@ client.on('message', async message => {
 
     //run the commands
     try {
-		client.commands.get(command).execute(discord, message, args, sequelize, Sequelize.DataTypes);
+		client.commands.get(command).execute(discord, message, args);
 	} catch (error) {
 		console.error(error);
 		message.reply('there was an error trying to execute that command!');
